@@ -1,0 +1,28 @@
+@startuml
+!include _estilo.iuml
+autonumber
+title R03 · Sequência: R$ 7,00 no banco A e notificação repetida
+participant ":ServicoDeMulta" as SM
+participant ":AdaptadorBancoA" as AD
+participant ":ApiBancoA" as API
+participant ":ServicoDeQuitacao" as Q
+participant ":RegistroDeCobrancas" as RC
+SM -> AD : emitirBoleto(SolicitacaoCobranca(id, cpf, 7.00))
+AD -> AD : paraCentavos(7.00) = 700
+AD -> API : gerarTitulo(cpf, 700)
+API --> AD : TituloA(nossoNumero, linhaDigitavel, 700)
+AD --> SM : Cobranca(valor 7.00)
+SM -> RC : registrar(cobranca)
+== Pagamento notificado (webhook JSON) ==
+API -> AD : receberWebhook(json)
+AD -> Q : confirmar(ConfirmacaoPagamento(A, nossoNumero, idPagamento, 7.00))
+Q -> RC : buscar(A, nossoNumero)
+Q -> RC : quitarSeAberta(idCobranca, idPagamento)
+RC --> Q : true (quitada)
+== Mesma notificação repetida ==
+API -> AD : receberWebhook(json)
+AD -> Q : confirmar(...)
+Q -> RC : quitarSeAberta(idCobranca, idPagamento)
+RC --> Q : false (já quitada: nada muda)
+note over SM, API : No banco B, o AdaptadorBancoB chama\nApiBancoB.abrirCobranca("123.456.789-00", 7.00):\no mesmo ServicoDeMulta, sem condicional por banco
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+!include _estilo.iuml
+autonumber
+title R07 · Sequência: estudante com CPF não cadastrado
+participant ":Main" as UI
+participant ":TratadorDeEstudante" as T
+participant ":iPessoa" as P
+UI -> T : inserirEstudante(cpf, idEstudante, matricula)
+T -> T : incluir(dados)
+activate T
+T -> T : buscarExistente(dados)
+alt já existe
+  T -> T : apresentar(existente, false)
+  note right : estudante duplicado:\nretorna o cadastro existente
+else novo
+  T -> T : validar(dados)
+  T -> T : verificarPreRequisitos(dados)
+  T -> P : consultarPessoa(cpf)
+  P --> T : vazio
+  T -> T : PessoaNaoCadastradaException
+  T -> T : ResultadoCadastro.recusado(motivo)
+  note right : criar() e armazenar() não são chamados:\nnada é gravado
+end
+deactivate T
+T --> UI : ResultadoCadastro
+@enduml

@@ -1,0 +1,28 @@
+@startuml
+!include _estilo.iuml
+autonumber
+title R06 · Sequência: renovação submetida duas vezes com o mesmo id
+participant ":Main" as UI
+participant "s:SolicitacaoDeRenovacao" as C
+participant ":TratadorDeEmprestimo" as T
+participant ":ExecutorDeSolicitacoes" as E
+participant ":RegistroDeSolicitacoes" as RG
+participant ":iCirculacao" as RC
+UI -> C ** : nova(autor, idLivro)
+UI -> T : submeter(s)
+T -> E : submeter(s)
+E -> RG : reservarExecucao(s.id)
+RG --> E : true
+E -> C : executar(receptor)
+C -> RC : renovar(idLivro)
+RC --> C : ComprovanteRenovacao (+30 dias)
+E -> RG : concluir(s.id, resultado)
+== Opção 11: reenviar a mesma solicitação ==
+UI -> T : submeter(s)
+T -> E : submeter(s)
+E -> RG : reservarExecucao(s.id)
+RG --> E : false
+E -> RG : resultadoDe(s.id)
+RG --> E : resultado guardado
+note right of E : executar() não é chamado de novo:\napenas 30 dias acrescentados
+@enduml

@@ -1,0 +1,82 @@
+@startuml
+!include _estilo.iuml
+title R05 · Observer: reações independentes à devolução
+class PublicadorDeDevolucao <<Subject>> {
+  - ouvintes : List<OuvinteDeDevolucao>
+  - falhas : List<FalhaDeOuvinte>
+  + registrar(o : OuvinteDeDevolucao) : void
+  + remover(o : OuvinteDeDevolucao) : void
+  + publicar(evento : EventoDevolucao) : void
+  + falhas() : List<FalhaDeOuvinte>
+}
+interface OuvinteDeDevolucao <<Observer>> {
+  + aoDevolver(evento : EventoDevolucao) : void
+}
+class OuvinteInspecao <<ConcreteObserver>> {
+  + aoDevolver(ev) : void
+}
+class OuvinteMulta <<ConcreteObserver>> {
+  + aoDevolver(ev) : void
+}
+class OuvinteIndicadores <<ConcreteObserver>> {
+  + aoDevolver(ev) : void
+}
+class OuvinteEmail <<ConcreteObserver>> {
+  + aoDevolver(ev) : void
+}
+class EventoDevolucao <<record (estado enviado: push)>> {
+  + idDevolucao : String
+  + idLivro : String
+  + cpfEstudante : String
+  + emailEstudante : String
+  + vencimento : LocalDate
+  + devolvidoEm : LocalDate
+  + ocorridoEm : Instant
+  + {static} de(c : ComprovanteDevolucao) : EventoDevolucao
+  + diasAtraso() : int
+}
+class FalhaDeOuvinte <<record>> {
+  + ouvinte : String
+  + idDevolucao : String
+  + motivo : String
+}
+class TratadorDeDevolucao {
+  + registrarDevolucao(idLivro) : Resultado
+}
+class AgendaDeInspecao {
+  + agendar(idLivro) : void
+  + concluir(idLivro) : void
+}
+class PainelDeIndicadores {
+  + registrar(diasAtraso : int) : void
+}
+interface ServicoDeEmail {
+  + enviar(destinatario, assunto, corpo) : void
+}
+interface iFinanceiro {
+  + solicitarMulta(cpf, idDevolucao, idLivro, diasAtraso) : void
+}
+PublicadorDeDevolucao o--> "0..*" OuvinteDeDevolucao : -ouvintes
+OuvinteDeDevolucao <|.. OuvinteInspecao
+OuvinteDeDevolucao <|.. OuvinteMulta
+OuvinteDeDevolucao <|.. OuvinteIndicadores
+OuvinteDeDevolucao <|.. OuvinteEmail
+OuvinteInspecao --> "1" AgendaDeInspecao : -agenda
+OuvinteMulta --> "1" iFinanceiro : -financeiro
+OuvinteIndicadores --> "1" PainelDeIndicadores : -painel
+OuvinteEmail --> "1" ServicoDeEmail : -email
+TratadorDeDevolucao --> "1" PublicadorDeDevolucao : -publicador
+TratadorDeDevolucao ..> EventoDevolucao : <<create>>
+PublicadorDeDevolucao ..> FalhaDeOuvinte : <<create>>
+OuvinteDeDevolucao ..> EventoDevolucao
+note right of PublicadorDeDevolucao
+  publicar() é chamado DEPOIS da confirmação
+  da devolução. Cada ouvinte roda em try/catch:
+  a falha vira FalhaDeOuvinte, não afeta os
+  demais nem desfaz a devolução.
+end note
+note bottom of OuvinteMulta
+  Só pede multa quando diasAtraso > 0.
+end note
+note "Novo ouvinte = nova classe que implementa OuvinteDeDevolucao\n+ publicador.registrar(...) em app/Sistema. O tratador não muda." as N1
+@enduml

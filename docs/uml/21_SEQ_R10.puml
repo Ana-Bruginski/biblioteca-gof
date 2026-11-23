@@ -1,0 +1,29 @@
+@startuml
+!include _estilo.iuml
+autonumber
+title R10 · Sequência: contar livros e mover entre seções
+participant ":TratadorDeOrganizacao" as T
+participant ":OrganizadorDoAcervo" as O
+participant "lit:GrupoDoAcervo" as U
+participant "romance:GrupoDoAcervo" as S1
+participant "regional:GrupoDoAcervo" as S2
+participant "item:ItemDoAcervo" as I
+T -> O : contarLivros("Literatura")
+O -> U : contarLivros()
+loop para cada filho
+  U -> S1 : contarLivros()
+  S1 --> U : 3
+  U -> S2 : contarLivros()
+  S2 --> U : 2
+end
+U --> T : 5
+== mover L1 de Romance para Regionalismo ==
+T -> O : mover("L1", "Regionalismo")
+O -> S1 : remover(item)
+O -> S2 : adicionar(item)
+opt HierarquiaInvalidaException
+  O -> S1 : adicionar(item)
+  note right : devolve à origem
+end
+note over O, I : O item só guarda o id do livro:\nid, estado e empréstimo não mudam
+@enduml

@@ -1,0 +1,46 @@
+CREATE TABLE IF NOT EXISTS livro (
+  id VARCHAR(40) PRIMARY KEY,
+  titulo VARCHAR(200) NOT NULL,
+  situacao VARCHAR(20) NOT NULL,
+  vencimento DATE NULL,
+  num_renovacoes INT NOT NULL DEFAULT 0,
+  cpf_reservante VARCHAR(14) NULL
+);
+CREATE TABLE IF NOT EXISTS pessoa (
+  cpf VARCHAR(14) PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  sobrenome VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS estudante (
+  cpf VARCHAR(14) PRIMARY KEY,
+  id_estudante VARCHAR(40) NOT NULL UNIQUE,
+  matricula VARCHAR(40) NOT NULL,
+  CONSTRAINT fk_estudante_pessoa FOREIGN KEY (cpf) REFERENCES pessoa (cpf)
+);
+CREATE TABLE IF NOT EXISTS atendente (
+  cpf VARCHAR(14) PRIMARY KEY,
+  id_atendente VARCHAR(40) NOT NULL UNIQUE,
+  setor VARCHAR(100) NOT NULL,
+  CONSTRAINT fk_atendente_pessoa FOREIGN KEY (cpf) REFERENCES pessoa (cpf)
+);
+CREATE TABLE IF NOT EXISTS reserva (
+  id VARCHAR(40) PRIMARY KEY,
+  id_livro VARCHAR(40) NOT NULL UNIQUE,
+  cpf VARCHAR(14) NOT NULL,
+  reservada_em DATETIME NOT NULL
+);
+CREATE TABLE IF NOT EXISTS emprestimo (
+  id VARCHAR(40) PRIMARY KEY,
+  id_livro VARCHAR(40) NOT NULL UNIQUE,
+  cpf VARCHAR(14) NOT NULL,
+  emprestado_em DATE NOT NULL,
+  vencimento DATE NOT NULL
+);
+CREATE TABLE IF NOT EXISTS devolucao (
+  id VARCHAR(40) PRIMARY KEY,
+  id_livro VARCHAR(40) NOT NULL,
+  cpf VARCHAR(14) NOT NULL,
+  vencimento DATE NOT NULL,
+  devolvido_em DATE NOT NULL
+)

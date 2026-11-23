@@ -1,0 +1,55 @@
+@startuml
+!include _estilo.iuml
+title Visão geral: pacotes de br.pucpr.ib2b e padrões aplicados
+left to right direction
+package app <<Tela e montagem>> {
+}
+package tratadores <<Tratadores do T02>> {
+}
+package cadastro <<Template Method>> {
+}
+package solicitacao <<Command>> {
+}
+package circulacao <<Facade>> {
+}
+package biblioteca <<Acervo, Relacionamento, Movimentacao>> {
+}
+package dominio <<State>> {
+}
+package persistencia <<Abstract Factory>> {
+  package memoria {
+  }
+  package mysql {
+  }
+}
+package devolucao <<Observer>> {
+}
+package financeiro <<Strategy>> {
+  package banco <<Adapter>> {
+  }
+}
+package consulta <<Decorator>> {
+}
+package organizacao <<Composite>> {
+}
+package infra <<Relógio e ids>> {
+}
+app ..> tratadores
+app ..> cadastro
+app ..> solicitacao
+tratadores ..> circulacao
+tratadores ..> solicitacao
+tratadores ..> devolucao
+tratadores ..> organizacao
+tratadores ..> financeiro
+solicitacao ..> circulacao
+cadastro ..> consulta
+cadastro ..> biblioteca
+circulacao ..> biblioteca
+biblioteca ..> persistencia
+biblioteca ..> dominio
+devolucao ..> financeiro
+financeiro ..> banco
+consulta ..> persistencia
+note "A interface (app/Main) chama apenas os tratadores.\nA composição de todas as peças fica em app/Sistema." as N1
+@enduml

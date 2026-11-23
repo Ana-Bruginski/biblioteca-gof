@@ -1,0 +1,77 @@
+@startuml
+!include _estilo.iuml
+title R02 · Strategy: políticas de cálculo de multa
+interface PoliticaDeMulta <<Strategy>> {
+  + id() : String
+  + calcular(dias : int) : BigDecimal
+}
+class MultaDiaria <<ConcreteStrategy>> {
+  - {static} VALOR_DIA : BigDecimal = 1.00
+  + id() : String = "ORIGINAL"
+  + calcular(dias : int) : BigDecimal
+}
+class MultaComTeto <<ConcreteStrategy>> {
+  - {static} VALOR_DIA : BigDecimal = 1.00
+  - {static} TETO : BigDecimal = 20.00
+  + id() : String = "TETO"
+  + calcular(dias : int) : BigDecimal
+}
+class MultaComTolerancia <<ConcreteStrategy>> {
+  - {static} VALOR_DIA : BigDecimal = 1.00
+  - {static} TOLERANCIA_DIAS : int = 2
+  + id() : String = "TOLERANCIA"
+  + calcular(dias : int) : BigDecimal
+}
+class ServicoDeMulta <<Context>> {
+  - multas : List<Multa>
+  + gerarMulta(cpf, idDevolucao, idLivro, diasAtraso : int) : Optional<Multa>
+  + cobrar(multa : Multa) : Cobranca
+  + multas() : List<Multa>
+}
+class ServicoDeSimulacao <<Context>> {
+  + simular(dias : int) : Map<String, BigDecimal>
+}
+class SeletorDePolitica {
+  - politicas : Map<String, PoliticaDeMulta>
+  + registrar(p : PoliticaDeMulta) : void
+  + obter(id : String) : PoliticaDeMulta
+  + vigente() : PoliticaDeMulta
+  + definirVigente(id : String) : void
+  + todas() : List<PoliticaDeMulta>
+}
+class ConfiguracaoAdministrativa {
+  - politicaVigente : String = "ORIGINAL"
+  + getPoliticaVigente() : String
+  ~ definirPolitica(id : String) : void
+}
+class Multa <<record>> {
+  + idMulta : String
+  + idDevolucao : String
+  + idLivro : String
+  + cpfEstudante : String
+  + diasAtraso : int
+  + valor : BigDecimal
+  + politicaAplicada : String
+  + emitidaEm : LocalDateTime
+}
+interface GatewayDeCobranca <<Target do R03>>
+PoliticaDeMulta <|.. MultaDiaria
+PoliticaDeMulta <|.. MultaComTeto
+PoliticaDeMulta <|.. MultaComTolerancia
+SeletorDePolitica o--> "0..*" PoliticaDeMulta : -politicas
+SeletorDePolitica --> "1" ConfiguracaoAdministrativa : -config
+ServicoDeMulta --> "1" SeletorDePolitica : -seletor
+ServicoDeSimulacao --> "1" SeletorDePolitica : -seletor
+ServicoDeMulta ..> Multa : <<create>>
+ServicoDeMulta --> "1" GatewayDeCobranca : -gateway
+note bottom of Multa
+  Guarda o valor e o NOME da política aplicada
+  na emissão: trocar a política não recalcula
+  multas já emitidas.
+end note
+note right of ServicoDeMulta
+  Sem if por política: pede seletor.vigente()
+  e chama calcular(diasAtraso).
+  Nova política = nova classe + registrar().
+end note
+@enduml

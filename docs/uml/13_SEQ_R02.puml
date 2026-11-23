@@ -1,0 +1,29 @@
+@startuml
+!include _estilo.iuml
+autonumber
+title R02 · Sequência: cálculo da multa com a política vigente e simulação
+participant ":OuvinteMulta" as O
+participant ":TratadorDeMulta" as TM
+participant ":ServicoDeMulta" as SM
+participant ":SeletorDePolitica" as SP
+participant "p:PoliticaDeMulta" as P
+participant ":GatewayDeCobranca" as G
+O -> TM : solicitarMulta(cpf, idDevolucao, idLivro, 5)
+TM -> SM : gerarMulta(cpf, idDevolucao, idLivro, 5)
+SM -> SP : vigente()
+SP --> SM : p (ex.: MultaDiaria)
+SM -> P : calcular(5)
+P --> SM : 5.00 (ORIGINAL) / 3.00 (TOLERANCIA)
+opt valor > 0
+  SM -> SM : new Multa(..., valor, p.id(), ...)
+  SM -> SM : cobrar(multa)
+  SM -> G : emitirBoleto(solicitacao)
+end
+== Simulação (não cria multa) ==
+participant ":ServicoDeSimulacao" as SIM
+SIM -> SP : todas()
+loop para cada política
+  SIM -> P : calcular(dias)
+end
+note over SM, P : 0 dias de atraso: valor zero em todas as políticas
+@enduml
