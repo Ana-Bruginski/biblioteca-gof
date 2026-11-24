@@ -90,7 +90,7 @@ src/main/java/br/pucpr/ib2b
 │                   Reserva, Emprestimo, Devolucao e exceções de domínio
 ├── biblioteca/     Pontos internos: AcervoDeLivros, Relacionamento, Movimentacao, SessaoDeDados
 ├── circulacao/     Facade: iCirculacao, ServicoDeCirculacao e comprovantes (DTOs)
-├── devolucao/      Observer: PublicadorDeDevolucao, EventoDevolucao e ouvintes
+├── devolucao/      Observer: PublicadorDeDevolucao, EventoDeDevolucao e ouvintes
 ├── solicitacao/    Command: SolicitacaoDeCirculacao, ExecutorDeSolicitacoes, RegistroDeSolicitacoes
 ├── financeiro/     Strategy: PoliticaDeMulta e políticas; ServicoDeMulta; TratadorDeMulta
 │   └── banco/      Adapter: GatewayDeCobranca, AdaptadorBancoA/B, ApiBancoA/B, ServicoDeQuitacao
@@ -139,9 +139,11 @@ src/main/java/br/pucpr/ib2b
 
 ## 7. Uso de LLMs
 
-O Claude (Anthropic) foi utilizado como apoio para aprimorar a interface do sistema, principalmente na organização visual e na apresentação das informações, com o objetivo de torná-la mais clara e agradável.
+O Claude (Anthropic) foi utilizado como ferramenta de apoio para aprimorar a interface do sistema, principalmente na organização visual e na apresentação das informações, com o objetivo de torná-la mais clara e agradável.
 
-A implementação dos requisitos foi dividida entre os integrantes, e cada um desenvolveu sua própria parte, conforme a divisão apresentada na seção 9.
+Os requisitos foram distribuídos entre os integrantes para organizar o trabalho, mas o desenvolvimento foi realizado de forma colaborativa, com todos contribuindo e ajudando nas diferentes partes do projeto.
+
+O registro do uso da ferramenta está disponível em [`REGISTRO_LLM.md`](REGISTRO_LLM.md).
 
 ## 8. Modelos UML
 
@@ -151,11 +153,12 @@ Os modelos estão na pasta [`docs/`](docs):
 |---|---|
 | `docs/Trabalho03-AnaBruginski_HugoSouza_JoaoMacena_NathanBueno.asta` | Modelo do Astah: o modelo do Trabalho 02 atualizado, com a pasta **Padroes GoF** contendo o diagrama de classes de cada padrão (R01 a R10), a máquina de estados do `Livro` e os diagramas de sequência dos dez cenários (SEQ R01 a SEQ R10) |
 | `docs/Trabalho03-Modelos-Astah.pdf` | Diagramas do Astah exportados em PDF, organizados por requisito: para cada padrão, o diagrama de classes seguido do diagrama de sequência do seu cenário (R01: classes p. 2, máquina de estados p. 3, sequência p. 4; R02 a R10: p. 5 a 22). O sumário está na p. 1 |
-| `docs/uml/*.puml` | Fonte de cada diagrama, em PlantUML, com os mesmos nomes de classes, atributos, operações e mensagens do código |
 
 A coluna "Modelos" da tabela de rastreabilidade (seção 5) indica a página de cada requisito no PDF do Astah. Os nomes seguem o código: por exemplo, o estado é representado pela classe abstrata `EstadoLivro` e persistido pela enumeração `Situacao`, e as operações de cadastro usam o CPF como chave.
 
 ## 9. Divisão da equipe
+
+Os requisitos foram distribuídos entre os integrantes para organizar as responsabilidades. Apesar dessa divisão, o desenvolvimento foi realizado de forma colaborativa, com todos participando e ajudando nas diferentes partes do projeto.
 
 | Integrante | Requisitos sob sua responsabilidade |
 |---|---|
