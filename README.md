@@ -139,12 +139,9 @@ src/main/java/br/pucpr/ib2b
 
 ## 7. Uso de LLMs
 
-| Ferramenta / modelo | Partes do sistema |
-|---|---|
-| Claude (Anthropic), modelo `claude-opus-5-5`, no aplicativo Claude (Cowork) | Geração inicial do código de todos os pacotes, dos testes `R01` a `R10`, do `FluxoCompletoTest`, do `schema.sql` e deste README |
-| Claude (Anthropic), modelo `claude-opus-5-5`, no aplicativo Claude (Cowork) | Diagramas UML do Trabalho 03 descritos em PlantUML a partir do código (`docs/uml/`), importados no Astah (plugin PlantUML) e exportados em PDF (`docs/Trabalho03-Modelos-Astah.pdf`). O diagrama de classes do R01 foi desenhado pela equipe no Astah |
+O Claude (Anthropic) foi utilizado como apoio para aprimorar a interface do sistema, principalmente na organização visual e na apresentação das informações, com o objetivo de torná-la mais clara e agradável.
 
-O resumo dos pedidos e do que a equipe aceitou, corrigiu ou descartou está em [`REGISTRO_LLM.md`](REGISTRO_LLM.md).
+A implementação dos requisitos foi dividida entre os integrantes, e cada um desenvolveu sua própria parte, conforme a divisão apresentada na seção 9.
 
 ## 8. Modelos UML
 
@@ -158,3 +155,11 @@ Os modelos estão na pasta [`docs/`](docs):
 
 A coluna "Modelos" da tabela de rastreabilidade (seção 5) indica a página de cada requisito no PDF do Astah. Os nomes seguem o código: por exemplo, o estado é representado pela classe abstrata `EstadoLivro` e persistido pela enumeração `Situacao`, e as operações de cadastro usam o CPF como chave.
 
+## 9. Divisão da equipe
+
+| Integrante | Requisitos sob sua responsabilidade |
+|---|---|
+| Nathan Bueno Catenacci Okazaki | R01 e R04 |
+| João Pedro Macena Correa | R05, R02 e R03 |
+| Ana Luiza Bruginski de Melo | R06, R07 e R08 |
+| Hugo Souza Jamielniak | R09 e R10 |

@@ -12,7 +12,8 @@ import java.time.Duration;
 import java.util.Properties;
 
 /** Le app.properties; qualquer chave pode ser sobrescrita com -Dchave=valor. */
-public class Configuracao {
+public class
+Configuracao {
     private final Properties props = new Properties();
 
     private Configuracao() { }
